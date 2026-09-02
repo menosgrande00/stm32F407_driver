@@ -1,0 +1,7 @@
+../Src/main.c:14:6:EXTI0_IRQHandler	8	static
+../Src/main.c:26:6:SPI1_IRQHandler	8	static
+../Src/main.c:31:5:main	8	static
+../Src/main.c:47:13:GPIO_LedConfig	40	static
+../Src/main.c:74:13:GPIO_ButtonInterruptConfig	16	static
+../Src/main.c:93:13:SPI_Config	16	static
+../Src/main.c:114:13:SPI_GPIO_Config	40	static

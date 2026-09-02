@@ -1,0 +1,8 @@
+"./Src/main.o"
+"./Src/syscalls.o"
+"./Src/sysmem.o"
+"./Startup/startup_stm32f407vgtx.o"
+"./mydrivers/src/EXTI.o"
+"./mydrivers/src/GPIO.o"
+"./mydrivers/src/SPI.o"
+"./mydrivers/src/USART.o"
