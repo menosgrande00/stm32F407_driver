@@ -19,8 +19,8 @@
  *
  */
 
-#define USART_WORLDLENGTH_8Bits		((uint32_t)(0x0000000))
-#define USART_WORLDLENGTH_9Bits		((uint32_t)(0x0001000))
+#define USART_WORDLENGTH_8Bits		((uint32_t)(0x0000000))
+#define USART_WORDLENGTH_9Bits		((uint32_t)(0x0001000))
 
 /*
  *
@@ -32,15 +32,55 @@
 #define USART_PARITY_EVEN			((uint32_t)(0x0000400))
 #define USART_PARITY_ODD			((uint32_t)(0x0000600))
 
+/*
+ *
+ * @def_group Stop_Bits
+ *
+ */
+
+#define USART_STOPBITS_1			((uint32_t)(0x0000000))
+#define USART_STOPBITS_Half			((uint32_t)(0x0001000))
+#define USART_STOPBITS_2			((uint32_t)(0x0002000))
+#define USART_STOPBITS_1_Half		((uint32_t)(0x0003000))
+
+/*
+ *
+ * @def_group OverSampling_Modes
+ *
+ */
+
+#define USART_OVERSAMPLE_16			((uint32_t)(0x0000000))
+#define USART_OVERSAMPLE_8			((uint32_t)(0x0008000))
+
+/*
+ *
+ * @def_group HardwareFlowControl_Modes
+ *
+ */
+
+#define USART_HW_NONE				((uint32_t)(0x0000000))
+#define USART_HW_CTS				((uint32_t)(0x0000200))
+#define USART_HW_RTS				((uint32_t)(0x0000100))
+#define USART_HW_CTS_RTS			((uint32_t)(0x0000300))
+
+typedef enum
+{
+	USART_FLAG_RESET = 0x0U,
+	USART_FLAG_SET = !USART_FLAG_RESET
+}USART_FlagStatus_t;
+
+#define __USART_DIV_VALUE_16(__CLOCK__, __BAUDRATE__)			(( 25U * (uint32_t)(__CLOCK__)) / (4U * (__BAUDRATE__)))
+#define __USART_DIV_VALUE_8(__CLOCK__, __BAUDRATE__)			(( 25U * (uint32_t)(__CLOCK__)) / (2U * (__BAUDRATE__)))
+
 typedef struct
 {
 	uint32_t Mode;					/*!< Transmission and Reception Modes @def_group MODE_Types */
-	uint32_t BaudRate;
+	uint32_t BaudRate;				/*!< User Value for UARD BaudRate */
 	uint32_t WordLength;			/*!< 8 Bits & 9 Bits Modes @def_group WordLength_Types */
 	uint32_t Parity;				/*!< Even & Odd Modes @def_group Parity_Modes */
-	uint32_t StopBits;
-	uint32_t OverSampling;
-	uint32_t HardwareFlowControl;
+	uint32_t StopBits;				/*!< Stop Bits Modes @def_group Stop_Bits */
+	uint32_t OverSampling;			/*!< OverSampling Modes @def_group OverSampling_Modes */
+	uint32_t HardwareFlowControl;	/*!< HardwareFlowControl Modes @def_group HardwareFlowControl_Modes */
 
 }USART_InitTypeDef_t;
 
@@ -51,8 +91,15 @@ typedef struct
 
 }USART_HandleTypeDef_t;
 
+#define __USART_BRR_OVERSAMPLING_8(__PCLOCK__, __BAUDRATE__)
+#define __USART_BRR_OVERSAMPLING_16(__PCLOCK__, __BAUDRATE__)
 
 
+void USART_Init(USART_HandleTypeDef_t *USART_Handle);
+void USART_TransmitData(USART_HandleTypeDef_t *USART_Handle, uint8_t *pData, uint16_t dataSize);
+void USART_ReceiveData(USART_HandleTypeDef_t *USART_Handle, uint8_t *pBuffer, uint16_t dataSize);
+void USART_PeriphCmd(USART_HandleTypeDef_t *USART_Handle, FunctionalState_t stateOfUSART);
+USART_FlagStatus_t USART_GetFlagStatus(USART_HandleTypeDef_t *USART_Handle, uint16_t flagName);
 
 
 

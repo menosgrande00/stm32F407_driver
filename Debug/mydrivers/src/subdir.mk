@@ -7,18 +7,21 @@
 C_SRCS += \
 ../mydrivers/src/EXTI.c \
 ../mydrivers/src/GPIO.c \
+../mydrivers/src/RCC.c \
 ../mydrivers/src/SPI.c \
 ../mydrivers/src/USART.c 
 
 OBJS += \
 ./mydrivers/src/EXTI.o \
 ./mydrivers/src/GPIO.o \
+./mydrivers/src/RCC.o \
 ./mydrivers/src/SPI.o \
 ./mydrivers/src/USART.o 
 
 C_DEPS += \
 ./mydrivers/src/EXTI.d \
 ./mydrivers/src/GPIO.d \
+./mydrivers/src/RCC.d \
 ./mydrivers/src/SPI.d \
 ./mydrivers/src/USART.d 
 
@@ -30,7 +33,7 @@ mydrivers/src/%.o mydrivers/src/%.su mydrivers/src/%.cyclo: ../mydrivers/src/%.c
 clean: clean-mydrivers-2f-src
 
 clean-mydrivers-2f-src:
-	-$(RM) ./mydrivers/src/EXTI.cyclo ./mydrivers/src/EXTI.d ./mydrivers/src/EXTI.o ./mydrivers/src/EXTI.su ./mydrivers/src/GPIO.cyclo ./mydrivers/src/GPIO.d ./mydrivers/src/GPIO.o ./mydrivers/src/GPIO.su ./mydrivers/src/SPI.cyclo ./mydrivers/src/SPI.d ./mydrivers/src/SPI.o ./mydrivers/src/SPI.su ./mydrivers/src/USART.cyclo ./mydrivers/src/USART.d ./mydrivers/src/USART.o ./mydrivers/src/USART.su
+	-$(RM) ./mydrivers/src/EXTI.cyclo ./mydrivers/src/EXTI.d ./mydrivers/src/EXTI.o ./mydrivers/src/EXTI.su ./mydrivers/src/GPIO.cyclo ./mydrivers/src/GPIO.d ./mydrivers/src/GPIO.o ./mydrivers/src/GPIO.su ./mydrivers/src/RCC.cyclo ./mydrivers/src/RCC.d ./mydrivers/src/RCC.o ./mydrivers/src/RCC.su ./mydrivers/src/SPI.cyclo ./mydrivers/src/SPI.d ./mydrivers/src/SPI.o ./mydrivers/src/SPI.su ./mydrivers/src/USART.cyclo ./mydrivers/src/USART.d ./mydrivers/src/USART.o ./mydrivers/src/USART.su
 
 .PHONY: clean-mydrivers-2f-src
 

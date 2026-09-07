@@ -1,0 +1,5 @@
+../mydrivers/src/USART.c:10:6:USART_Init	40	static
+../mydrivers/src/USART.c:89:6:USART_TransmitData	32	static
+../mydrivers/src/USART.c:135:6:USART_ReceiveData	32	static
+../mydrivers/src/USART.c:192:6:USART_PeriphCmd	16	static
+../mydrivers/src/USART.c:215:20:USART_GetFlagStatus	16	static

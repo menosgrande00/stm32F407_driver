@@ -1,4 +1,4 @@
-Src/main.o: ../Src/main.c \
+Src/USART_Test.o: ../Src/USART_Test.c \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/stm32f407xx.h \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/RCC.h \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/stm32f407xx.h \

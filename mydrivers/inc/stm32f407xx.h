@@ -332,6 +332,13 @@ typedef struct
 #define SPI_CR2_TXEIE				(7U)
 #define SPI_CR2_RXNEIE				(6U)
 
+#define USART_CR1_UE				(13U)
+#define UART_CR2_STOP				(12U)
+
+#define USART_SR_TxE				(7U)
+#define USART_SR_TC					(6U)
+#define USART_SR_RxNE				(5U)
+
 /*
  *
  * Flag Definitions
@@ -341,6 +348,10 @@ typedef struct
 #define SPI_TxE_Flag				(0x1U << SPI_SR_TxE)
 #define SPI_BSY_Flag				(0x1U << SPI_SR_BSY)
 #define SPI_RxNE_Flag				(0x1U << SPI_SR_RXNE)
+
+#define USART_TxE_FLAG				(0x1U << USART_SR_TxE)
+#define USART_TC_FLAG				(0x1U << USART_SR_TC)
+#define USART_RxNE_FLAG				(0x1U << USART_SR_RxNE)
 
 #include "RCC.h"
 #include "GPIO.h"
