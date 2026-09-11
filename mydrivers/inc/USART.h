@@ -72,6 +72,13 @@ typedef enum
 #define __USART_DIV_VALUE_16(__CLOCK__, __BAUDRATE__)			(( 25U * (uint32_t)(__CLOCK__)) / (4U * (__BAUDRATE__)))
 #define __USART_DIV_VALUE_8(__CLOCK__, __BAUDRATE__)			(( 25U * (uint32_t)(__CLOCK__)) / (2U * (__BAUDRATE__)))
 
+typedef enum
+{
+	USART_BUS_FREE = 0x0U,
+	USART_BUS_TX = 0x1U,
+	USART_BUS_RX = 0x2U
+}USART_BusState_t;
+
 typedef struct
 {
 	uint32_t Mode;					/*!< Transmission and Reception Modes @def_group MODE_Types */
@@ -84,10 +91,18 @@ typedef struct
 
 }USART_InitTypeDef_t;
 
-typedef struct
+typedef struct __USART_HandleTypeDef_t
 {
 	USART_TypeDef_t		*Instance;
 	USART_InitTypeDef_t	Init;
+	uint8_t				*pTxBuffer;
+	uint16_t			TxBufferSize;
+	uint8_t				TxStatus;
+	uint8_t				*pRxBuffer;
+	uint16_t			RxBufferSize;
+	uint8_t				RxStatus;
+	void				(*TxISR_Function)(struct __USART_HandleTypeDef_t *USART_Handle);
+	void				(*RxISR_Function)(struct __USART_HandleTypeDef_t *USART_Handle);
 
 }USART_HandleTypeDef_t;
 
@@ -98,8 +113,11 @@ typedef struct
 void USART_Init(USART_HandleTypeDef_t *USART_Handle);
 void USART_TransmitData(USART_HandleTypeDef_t *USART_Handle, uint8_t *pData, uint16_t dataSize);
 void USART_ReceiveData(USART_HandleTypeDef_t *USART_Handle, uint8_t *pBuffer, uint16_t dataSize);
+void USART_TransmitData_IT(USART_HandleTypeDef_t *USART_Handle, uint8_t *pData, uint16_t dataSize);
+void USART_ReceiveData_IT(USART_HandleTypeDef_t *USART_Handle, uint8_t *pBuffer, uint16_t dataSize);
 void USART_PeriphCmd(USART_HandleTypeDef_t *USART_Handle, FunctionalState_t stateOfUSART);
 USART_FlagStatus_t USART_GetFlagStatus(USART_HandleTypeDef_t *USART_Handle, uint16_t flagName);
+void USART_InterruptHandler(USART_HandleTypeDef_t *USART_Handle);
 
 
 

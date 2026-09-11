@@ -1,0 +1,2 @@
+../mydrivers/src/I2C.c:3:6:I2C_Init	4
+../mydrivers/src/I2C.c:58:6:I2C_PeriphCmd	2

@@ -80,6 +80,15 @@
 #define RCC_USART2_CLK_DISABLE()			CLEAR_BIT(RCC->APB1ENR, RCC_APB1ENR_USART2)
 
 
+
+#define RCC_I2C1_CLK_ENABLE()			do{ 	uint32_t tempValue = 0;	\
+												SET_BIT(RCC->APB1ENR, RCC_APB1ENR_I2C1EN);	\
+												tempValue = READ_BIT(RCC->APB1ENR, RCC_APB1ENR_I2C1EN); /* Giving time for setting bits*/ \
+												UNUSED(tempValue);	\
+											}while(0)
+
+#define RCC_I2C1_CLK_DISABLE()				CLEAR_BIT(RCC->APB1ENR, RCC_APB1ENR_I2C1EN)
+
 /*
  *
  *

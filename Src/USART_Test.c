@@ -1,21 +1,28 @@
 #include "stm32f407xx.h"
 
-USART_HandleTypeDef_t USART_Handle;
+USART_HandleTypeDef_t	USART_Handle;
+I2C_HandleTypeDef_t		I2C_Handle;
 
 static void GPIO_Config(void);
 static void UART_Config(void);
 
+void USART2_IRQHandler()
+{
+	USART_InterruptHandler(&USART_Handle);
+}
+
 int main(void)
 {
-    uint8_t txData = 'A';
-    volatile uint8_t rxData = 0;
+    char msgToSend[] = "Hello World\n";
+    char receiveData[30];
 
     GPIO_Config();
     UART_Config();
 
-    USART_TransmitData(&USART_Handle, &txData, 1);
+    USART_TransmitData_IT(&USART_Handle, (uint8_t *)msgToSend, strlen(msgToSend));
+    USART_ReceiveData_IT(&USART_Handle, (uint8_t *)receiveData, 20);
 
-    USART_ReceiveData(&USART_Handle, (uint8_t *)&rxData, 1);
+    I2C_PeriphCmd(I2C_Handle.Instance, ENABLE);
 
     while (1)
     {
@@ -37,6 +44,8 @@ static void UART_Config()
 	USART_Handle.Init.WordLength = USART_WORDLENGTH_8Bits;
 
 	USART_Init(&USART_Handle);
+
+	NVIC_EnableInterrupt(USART2_IRQNumber);
 
 	USART_PeriphCmd(&USART_Handle, ENABLE);
 

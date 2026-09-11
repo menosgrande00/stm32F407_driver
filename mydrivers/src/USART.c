@@ -1,5 +1,93 @@
 #include "USART.h"
 
+static void closeUSART_ISR(USART_HandleTypeDef_t *USART_Handle)
+{
+	USART_Handle->TxBufferSize = 0;
+	USART_Handle->pTxBuffer = NULL;
+	USART_Handle->TxStatus = USART_BUS_FREE;
+
+	USART_Handle->Instance->CR1 &= ~(0x1U << USART_CR1_TxEIE);
+}
+
+static void closeUSART_ISR_Rx(USART_HandleTypeDef_t *USART_Handle)
+{
+	USART_Handle->TxBufferSize = 0;
+	USART_Handle->pRxBuffer = NULL;
+	USART_Handle->RxStatus = USART_BUS_FREE;
+
+	USART_Handle->Instance->CR1 &= ~(0x1U << USART_CR1_RxNEIE);
+}
+
+static void USART_ReceiveWith_IT(USART_HandleTypeDef_t *USART_Handle)
+{
+	uint16_t *p16BitsBuffer;
+	uint8_t *p8BitsBuffer;
+
+	if (USART_Handle->Init.WordLength == USART_WORDLENGTH_9Bits
+				&& USART_Handle->Init.Parity == USART_PARITY_NONE)
+	{
+		p16BitsBuffer = (uint16_t *)USART_Handle->pRxBuffer;
+		p8BitsBuffer = NULL;
+	}
+	else
+	{
+		p8BitsBuffer = (uint8_t *)USART_Handle->pRxBuffer;
+		p16BitsBuffer = NULL;
+	}
+
+	if (p8BitsBuffer == NULL)
+	{
+		*p16BitsBuffer = (uint16_t)(USART_Handle->Instance->DR & 0x01FF);
+		p16BitsBuffer++;
+		USART_Handle->RxBufferSize -= 2;
+	}
+	else
+	{
+		if (USART_Handle->Init.WordLength == USART_WORDLENGTH_9Bits
+				&& USART_Handle->Init.Parity != USART_PARITY_NONE)
+		{
+			*p8BitsBuffer = (uint8_t)(USART_Handle->Instance->DR & 0x00FFU);
+		}
+		else if (USART_Handle->Init.WordLength == USART_WORDLENGTH_8Bits
+				&& USART_Handle->Init.Parity == USART_PARITY_NONE)
+		{
+			*p8BitsBuffer = (uint8_t)(USART_Handle->Instance->DR & 0x00FFU);
+		}
+		else
+		{
+			*p8BitsBuffer = (uint8_t)(USART_Handle->Instance->DR & 0x007FU);
+		}
+		p8BitsBuffer++;
+		USART_Handle->RxBufferSize--;
+	}
+	if (USART_Handle->RxBufferSize == 0)
+	{
+		closeUSART_ISR_Rx(USART_Handle);
+	}
+}
+
+static void USART_SendWith_IT(USART_HandleTypeDef_t *USART_Handle)
+{
+	if(USART_Handle->Init.WordLength == USART_WORDLENGTH_9Bits
+			&& USART_Handle->Init.Parity == USART_PARITY_NONE)
+	{
+		uint16_t *data16Bits = (uint16_t *)(USART_Handle->pTxBuffer);
+		USART_Handle->Instance->DR = ((uint16_t)(*data16Bits & (0x1FFU)));
+		USART_Handle->pTxBuffer += sizeof(uint16_t);
+		USART_Handle->TxBufferSize -= 2;
+	}
+	else
+	{
+		USART_Handle->Instance->DR = ((uint8_t)(*(USART_Handle->pTxBuffer) & (0x0FFU)));
+		USART_Handle->pTxBuffer++;
+		USART_Handle->TxBufferSize--;
+	}
+	if (USART_Handle->TxBufferSize == 0)
+	{
+		closeUSART_ISR(USART_Handle);
+	}
+}
+
 /**
  * @brief  USART Init, Configures the USART Peripheral.
  *
@@ -179,6 +267,36 @@ void USART_ReceiveData(USART_HandleTypeDef_t *USART_Handle, uint8_t *pBuffer, ui
 	}
 }
 
+void USART_TransmitData_IT(USART_HandleTypeDef_t *USART_Handle, uint8_t *pData, uint16_t dataSize)
+{
+	USART_BusState_t usartBusState = USART_Handle->TxStatus;
+
+	if (usartBusState != USART_BUS_TX)
+	{
+		USART_Handle->pTxBuffer = (uint8_t *)pData;
+		USART_Handle->TxBufferSize = (uint16_t)dataSize;
+		USART_Handle->TxStatus = USART_BUS_TX;
+		USART_Handle->TxISR_Function = USART_SendWith_IT;
+
+		USART_Handle->Instance->CR1 |= (0x1 << USART_CR1_TxEIE);
+	}
+}
+
+void USART_ReceiveData_IT(USART_HandleTypeDef_t *USART_Handle, uint8_t *pBuffer, uint16_t dataSize)
+{
+	USART_BusState_t usartBusState = USART_Handle->RxStatus;
+
+	if (usartBusState != USART_BUS_RX)
+	{
+		USART_Handle->pRxBuffer = (uint8_t *)pBuffer;
+		USART_Handle->RxBufferSize = (uint16_t)dataSize;
+		USART_Handle->RxStatus = USART_BUS_RX;
+		USART_Handle->RxISR_Function = USART_ReceiveWith_IT;
+
+		USART_Handle->Instance->CR1 |= (0x1 << USART_CR1_RxNEIE);
+	}
+}
+
 
 /**
  * @brief  USART_PeriphCmd, Enable or Disable USART Peripheral.
@@ -215,4 +333,26 @@ void USART_PeriphCmd(USART_HandleTypeDef_t *USART_Handle, FunctionalState_t stat
 USART_FlagStatus_t USART_GetFlagStatus(USART_HandleTypeDef_t *USART_Handle, uint16_t flagName)
 {
 	return ((USART_Handle->Instance->SR & flagName) ? USART_FLAG_SET : USART_FLAG_RESET);
+}
+
+void USART_InterruptHandler(USART_HandleTypeDef_t *USART_Handle)
+{
+	uint8_t interruptSource = 0;
+	uint8_t interruptFlag = 0;
+
+	interruptSource = USART_Handle->Instance->CR1 & (0x1U << USART_CR1_TxEIE);
+	interruptFlag = USART_Handle->Instance->SR & (0x1U << USART_SR_TxE);
+
+	if ( interruptSource && interruptFlag )
+	{
+		USART_Handle->TxISR_Function(USART_Handle);
+	}
+
+	interruptSource = USART_Handle->Instance->CR1 & (0x1U << USART_CR1_RxNEIE);
+	interruptFlag = USART_Handle->Instance->SR & (0x1U << USART_SR_RxNE);
+
+	if ( interruptSource && interruptFlag )
+	{
+		USART_Handle->RxISR_Function(USART_Handle);
+	}
 }
