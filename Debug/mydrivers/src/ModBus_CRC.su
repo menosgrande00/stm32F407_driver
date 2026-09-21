@@ -1,0 +1,2 @@
+../mydrivers/src/ModBus_CRC.c:6:6:Modbus_CRC_GenerateTable	16	static
+../mydrivers/src/ModBus_CRC.c:29:10:Modbus_CalculateCRC	24	static

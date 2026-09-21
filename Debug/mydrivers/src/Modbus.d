@@ -1,4 +1,5 @@
-Src/USART_Test.o: ../Src/USART_Test.c \
+mydrivers/src/Modbus.o: ../mydrivers/src/Modbus.c \
+ /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/Modbus.h \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/stm32f407xx.h \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/RCC.h \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/stm32f407xx.h \
@@ -6,7 +7,11 @@ Src/USART_Test.o: ../Src/USART_Test.c \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/EXTI.h \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/SPI.h \
  /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/USART.h \
- /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/I2C.h
+ /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/I2C.h \
+ /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/Modbus.h \
+ /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/Modbus_CRC.h \
+ /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/Modbus_CRC.h
+/Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/Modbus.h:
 /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/stm32f407xx.h:
 /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/RCC.h:
 /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/stm32f407xx.h:
@@ -15,3 +20,6 @@ Src/USART_Test.o: ../Src/USART_Test.c \
 /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/SPI.h:
 /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/USART.h:
 /Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/I2C.h:
+/Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/Modbus.h:
+/Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/Modbus_CRC.h:
+/Users/omerfarukonal/STM32CubeIDE/workspace_2.2.0/driver_development/mydrivers/inc/Modbus_CRC.h:

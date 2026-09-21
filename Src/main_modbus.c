@@ -1,4 +1,6 @@
 #include "stm32f407xx.h"
+#include "Modbus.h"
+#include "Modbus_CRC.h"
 
 USART_HandleTypeDef_t USART_Handle;
 
@@ -7,38 +9,39 @@ static void UART_Config(void);
 
 void USART2_IRQHandler(void)
 {
-    USART_InterruptHandler(&USART_Handle);
+	USART_InterruptHandler(&USART_Handle);
 }
 
 int main(void)
 {
-    uint8_t receiveData[4];
+	uint8_t modbusRxBuffer[MODBUS_READ_REQUEST_SIZE];
+	Modbus_FrameStatus_t status;
+	ModbusFrame_t frame;
 
-    uint8_t responseData[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+	GPIO_Config();
+	UART_Config();
+	Modbus_CRC_GenerateTable();
 
-    GPIO_Config();
-    UART_Config();
+	USART_ReceiveData_IT(&USART_Handle, modbusRxBuffer, MODBUS_READ_REQUEST_SIZE);
 
-    USART_ReceiveData_IT(&USART_Handle, receiveData, 4);
+	while (1)
+	{
+		if (USART_Handle.RxStatus == USART_BUS_FREE)
+		{
+			status = Modbus_ValidateFrame(modbusRxBuffer, MODBUS_READ_REQUEST_SIZE);
 
-    while (1)
-    {
-        if (USART_Handle.RxStatus == USART_BUS_FREE)
-        {
-            if (receiveData[0] == 0x01 && receiveData[1] == 0x02 &&
-                receiveData[2] == 0x03 && receiveData[3] == 0x04)
-            {
-            	USART_TransmitData(&USART_Handle, responseData,4);
-            }
+			if (status == MODBUS_FRAME_OK)
+			{
+				Modbus_ParseFrame(modbusRxBuffer, MODBUS_READ_REQUEST_SIZE, &frame);
+			}
 
-            USART_ReceiveData_IT(&USART_Handle, receiveData, 4);
-        }
-    }
+			USART_ReceiveData_IT(&USART_Handle, modbusRxBuffer, MODBUS_READ_REQUEST_SIZE);
+		}
+	}
 }
 
-static void UART_Config()
+static void UART_Config(void)
 {
-
 	RCC_USART2_CLK_ENABLE();
 
 	USART_Handle.Instance = USART2;
@@ -51,14 +54,11 @@ static void UART_Config()
 	USART_Handle.Init.WordLength = USART_WORDLENGTH_9Bits;
 
 	USART_Init(&USART_Handle);
-
 	NVIC_EnableInterrupt(USART2_IRQNumber);
-
 	USART_PeriphCmd(&USART_Handle, ENABLE);
-
 }
 
-static void GPIO_Config()
+static void GPIO_Config(void)
 {
 	GPIO_InitTypeDef_t GPIO_InitStruct = { 0 };
 
@@ -72,5 +72,4 @@ static void GPIO_Config()
 	GPIO_InitStruct.Alternate = GPIO_AF7;
 
 	GPIO_Init(GPIOA, &GPIO_InitStruct);
-
 }

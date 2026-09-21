@@ -1,0 +1,4 @@
+../Src/main_modbus.c:10:6:USART2_IRQHandler	8	static
+../Src/main_modbus.c:15:5:main	32	static
+../Src/main_modbus.c:43:13:UART_Config	16	static
+../Src/main_modbus.c:61:13:GPIO_Config	40	static

@@ -1,0 +1,4 @@
+../mydrivers/src/Modbus.c:4:17:Modbus_GetU16	1
+../mydrivers/src/Modbus.c:10:22:Modbus_ValidateFrame	12
+../mydrivers/src/Modbus.c:118:10:Modbus_BuildExceptionResponse	1
+../mydrivers/src/Modbus.c:138:6:Modbus_ParseFrame	1

@@ -391,5 +391,7 @@ typedef struct
 #include "SPI.h"
 #include "USART.h"
 #include "I2C.h"
+#include "Modbus.h"
+#include "Modbus_CRC.h"
 
 #endif
